@@ -3,22 +3,29 @@ const express = require('express');
 const { GoogleGenAI } = require("@google/genai");
 const cors = require('cors');
 
+// ✅ Initialize app FIRST
+const app = express();
+
+// ✅ Then configure middleware
 const corsOptions = {
   origin: [
     'https://vercel-frontend-chatbot.vercel.app', // Production frontend
-    'http://localhost:3000' // Development frontend (port 3000)
+    'http://localhost:3000' // Development frontend
   ],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
-  credentials: true // Only if using cookies/auth
+  credentials: true
 };
 
 app.use(cors(corsOptions));
-
-const app = express();
-app.use(cors());
 app.use(express.json());
+
 const PORT = process.env.PORT || 5000;
+
+// ✅ Optional root route for testing
+app.get("/", (req, res) => {
+  res.send("Backend is running ✅");
+});
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -27,7 +34,7 @@ app.post('/api/chat', async (req, res) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro-latest", // or "gemini-1.0-pro" or "gemini-2.0-flash-lite"
+      model: "gemini-1.5-pro-latest",
       contents: [
         {
           role: "user",
@@ -48,5 +55,5 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log('Server running on port 5000');
+  console.log(`Server running on port ${PORT}`);
 });
