@@ -3,6 +3,18 @@ const express = require('express');
 const { GoogleGenAI } = require("@google/genai");
 const cors = require('cors');
 
+const corsOptions = {
+  origin: [
+    'https://vercel-frontend-chatbot.vercel.app', // Production frontend
+    'http://localhost:3000' // Development frontend (port 3000)
+  ],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true // Only if using cookies/auth
+};
+
+app.use(cors(corsOptions));
+
 const app = express();
 app.use(cors());
 app.use(express.json());
