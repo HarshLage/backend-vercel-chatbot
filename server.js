@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ Add this simple root route
+app.get("/", (req, res) => {
+  res.send("Backend is running ✅");
+});
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 app.post('/api/chat', async (req, res) => {
@@ -14,7 +19,7 @@ app.post('/api/chat', async (req, res) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro-latest", // or "gemini-1.0-pro" or "gemini-2.0-flash-lite"
+      model: "gemini-1.5-pro-latest",
       contents: [
         {
           role: "user",
@@ -34,6 +39,8 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log('Server running on port 5000');
+// ✅ Use dynamic port for Render/Vercel compatibility
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
