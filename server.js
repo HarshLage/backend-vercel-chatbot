@@ -6,14 +6,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Health check endpoint
-app.get('/', (req, res) => {
-  res.status(200).json({ 
-    status: 'running', 
-    message: 'Backend server is operational' 
-  });
-});
+const PORT = process.env.PORT || 5000;
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -22,7 +15,7 @@ app.post('/api/chat', async (req, res) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro-latest",
+      model: "gemini-1.5-pro-latest", // or "gemini-1.0-pro" or "gemini-2.0-flash-lite"
       contents: [
         {
           role: "user",
@@ -42,8 +35,6 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Use Render's provided port or 5000 for local development
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log('Server running on port 5000');
 });
